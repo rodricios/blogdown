@@ -1,0 +1,80 @@
+<!--http://bottlepy.org/docs/0.12/stpl.html#embedded-python-code-->
+
+<%
+setdefault('head_title', 'head title here')
+setdefault('title','title here')
+setdefault('tagline', 'tagline here')
+setdefault('nav_list', ['nav', 'list'])
+setdefault('post_title', 'post title here')
+setdefault('post_author', 'post author here')
+setdefault('post_tags', 'post tags here')
+setdefault('post_description', 'post description here')
+setdefault('author_avatar', 'author avatar here')
+%>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
+    <title>{{head_title}}</title>
+
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/2.2.2/octicons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">-->
+    <link rel="stylesheet" href="css/pure/pure-min.css">
+
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+    <!--<![endif]-->
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="css/layouts/blog-old-ie.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="css/layouts/blogdown.css">
+    <!--<![endif]-->
+    </head>
+    <body>
+        <div id="layout" class="pure-g">
+            <div class="sidebar pure-u-1 pure-u-md-1-6">
+                % if devmode:
+                    <nav class="nav">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <a title="Upload to GitHub" class="pure-button" href="#TODO-upload-to-github">
+                                    <!--<span class="octicon octicon-cloud-upload"></span>-->
+                                    <i class="fa fa-github fa-3"></i>
+                                </a>
+                                <a id="save-site" title="Save to my machine" class="pure-button" href="#TODO-save-to-localhost">
+                                    <i class="fa fa-floppy-o"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!--<div class="save-section">-->
+                    <!--    <a href="#TODO-upload-to-github">-->
+                    <!--        <span class="mega-octicon octicon-cloud-upload"></span>-->
+                    <!--    </a>-->
+                    <!--</div>-->
+                % end
+                % include('header.html')
+                % include('navmenu.html')
+                <!--% include('navmap.html')-->
+            </div>
+            <div class="content pure-u-1 pure-u-md-5-6">
+                <div>
+                    {{!base}}
+                    <!--% include('posts.html')-->
+                    % include('footer.html')
+                </div>
+            </div>
+        </div>
+        <!--<script src="js/ui.js"></script>-->
+    </body>
+</html>

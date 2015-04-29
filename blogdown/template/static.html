@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
+    <title>rodrigo palacios</title>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+    <!--<![endif]-->
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="css/layouts/blog-old-ie.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="css/layouts/blogdown.css">
+    <!--<![endif]-->
+    </head>
+    <body>
+        <div id="layout" class="pure-g">
+            <div class="sidebar pure-u-1 pure-u-md-1-4">
+                <div class="header">
+                    <h1 class="brand-title">rodri.cios</h1>
+                    <h2 class="brand-tagline"></h2>
+                    <nav class="nav">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <a class="pure-button" href="/posts">Posts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="pure-button" href="/projects">Projecs</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="content pure-u-1 pure-u-md-3-4">
+                <div>
+                    <!-- A wrapper for all the blog posts -->
+                    <div class="posts">
+                        <h1 class="content-subhead"></h1>
+
+                        <!-- A single blog post -->
+                        <section class="post">
+                            <header class="post-header">
+                                <!--<img class="post-avatar" alt="" height="48" width="48" src="">-->
+
+                                <h2 class="post-title">Welcome!</h2>
+
+                                <p class="post-meta">
+                                    <!--By <a href="#" class="post-author">Rodrigo</a> under-->
+                                    <!--<a class="post-category post-category-design" href="#">CSS</a>-->
+                                    <!--<a class="post-category post-category-pure" href="#">Pure</a>-->
+                                </p>
+                            </header>
+                            <div class="post-description">
+                                <p>
+                                    My full name is Rodrigo Palacios. A mouthful, I know, so I'm o.k. with
+                                    just <i>Rod</i>. I'm an undergraduate at California
+                                    State University, Fresno. Besides breathing the wonderful Fresnan air,
+                                    I enjoy spending my time solving seemingly hard problems. What problems
+                                    have I provided possible solutions for?
+                                </p>
+                                <ul>
+                                    <li>
+                                        The <i>Main article from a website. I want that, and only that.</i> problem
+                                    </li>
+                                    <li>
+                                        The <i>Reverse engineering Flipboard's auto-summary feature from an intern's
+                                        slightly <b>too</b> descriptive blog post</i> problem.
+                                    </li>
+                                    <li>
+                                        The <i>So I was texting my friend, "Yo nigga.." and my iPhone autocompleted/corrected
+                                        it to "niggardly" - how does that work by the way?</i> problem.
+                                    </li>
+                                    <li>
+                                        The <i>See all those tabular data structures on websites? I want
+                                        those</i> problem.
+                                    </li>
+                                </ul>
+
+                                <p>
+                                    Besides my surprise that companies seem to not care about these sorts of
+                                    accomplishments, which I do include in my CV in a more "professional" tone,
+                                    I'm still an optimist when it comes to the Internet. With the help of Internet,
+                                    I've been able to reach the minds of roughly 80 or so thousands of people
+                                    (including revisits, not including revisits I'd say it's somewhere around
+                                    40 thousand<sup><a href="#1">1</a></sup>).
+                                </p>
+                                <p>
+                                    I'm a big proponent of experimental, imaginative educational materials<sup><a href="#2">2</a></sup><sup><a href="#3">3</a></sup>.
+                                    I'm also a big fan of academic collaboration. I'm
+                                </p>
+                            </div>
+                        </section>
+                    </div>
+                    <!-- Next section -->
+                    <div class="posts">
+                        <h1 class="content-subhead">Recent Posts</h1>
+
+                    </div>
+                    <div class="footer">
+                        <div class="footnotes">
+                            <sup id="1" style="float: left;">1. numbers estimated from GitHub's Google-Analytics-powered traffic graphs.</sup>
+                        </div>
+                        <div class="pure-menu pure-menu-horizontal">
+                            <ul>
+                                <li class="pure-menu-item"><a href="http://purecss.io/" class="pure-menu-link">About</a></li>
+                                <li class="pure-menu-item"><a href="http://twitter.com/yuilibrary/" class="pure-menu-link">Twitter</a></li>
+                                <li class="pure-menu-item"><a href="http://github.com/yahoo/pure/" class="pure-menu-link">GitHub</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

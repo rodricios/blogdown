@@ -1,0 +1,11 @@
+<!--%setdefault('nav_list', ['nav', 'list', 'here'])-->
+<nav class="nav">
+    <ul class="nav-list">
+        % for item in nav_list:
+            <li class="nav-item">
+                <a class="pure-button" href="#">{{item}}</a>
+            </li>
+        % end
+    </ul>
+    <!--% include('navmenu.html')-->
+</nav>

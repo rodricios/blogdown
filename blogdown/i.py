@@ -1,0 +1,5 @@
+"""
+handles all input
+"""
+
+

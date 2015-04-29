@@ -1,0 +1,20 @@
+% rebase('base.html', navmenu=navmenu)
+% setdefault('content_subhead', 'content subhead here')
+
+<!--DEFAULTS FOR post.html-->
+<%
+setdefault('tagline', 'tagline here')
+setdefault('nav_list', ['nav', 'list'])
+setdefault('post_title', 'post title here')
+setdefault('post_author', 'post author here')
+setdefault('post_tags', 'post tags here')
+setdefault('post_description', 'post description here')
+setdefault('author_avatar', 'author avatar here')
+%>
+
+<!-- A wrapper for all the blog posts -->
+<div class="posts">
+    <h1 class="content-subhead">{{content_subhead}}</h1>
+    <!-- A single blog post -->
+    % include('post.html')
+</div>

@@ -1,0 +1,93 @@
+<style>
+.custom-restricted-width {
+    /* To limit the menu width to the content of the menu: */
+    display: inline-block;
+    /* Or set the width explicitly: */
+    /* width: 10em; */
+}
+</style>
+<nav class="nav-menu">
+    <!--<%-->
+    <!---->
+    <!--    def json_to_html_ul(d,tag=""):-->
+    <!--        tag = "<ul>"-->
+    <!---->
+    <!--        for key in d:-->
+    <!--            tag += "<li>" + key-->
+    <!---->
+    <!--            if type(d[key])==type({}):-->
+    <!--                tag += json_to_html_ul(d[key],"") + "</li>"-->
+    <!--            else:-->
+    <!--                tag += "</li>"-->
+    <!---->
+    <!--        tag += "</ul>"-->
+    <!--        return tag-->
+    <!--%>-->
+
+    <ul id="menu-root" data-name="dirs">
+        <li class="ui-state-default ui-state-disabled">
+            <a href="#"><i class="menu-folder-add fi-folder-add"></i></a>
+        </li>
+    </ul>
+    <!--<ul class="sortable">-->
+    <!--    -->
+    <!--</ul>-->
+
+    <!--<ul>-->
+    <!--    <li>-->
+    <!--        <a href="#">Flickr</a>-->
+    <!--    </li>-->
+    <!--    <li>-->
+    <!--        <a class="menu-folder" href="#">More</a>-->
+    <!--        <ul class="menu-inner">-->
+    <!--            <li>-->
+    <!--                <a href="#">Autos</a>-->
+    <!--            </li>-->
+    <!--            <li>-->
+    <!--                <a href="#">Flickr</a>-->
+    <!--            </li>-->
+    <!--        </ul>-->
+    <!--    </li>-->
+    <!--</ul>-->
+
+    <script src="js/underscore.js"></script>
+    <!--<script src="js/underscore.string.js"></script>
+    <script src="js/inherit.js"></script>
+    <script src="js/reverse.js"></script>-->
+    <script src="js/menus.js"></script>
+    <script src="js/jquery-2.1.3.js"></script>
+    <!--<script src="js/jquery.auderoSmokeEffect.js"></script>-->
+    <script src="js/jquery.awesome-cursor.min.js"></script>
+    <script src="js/navmenu.js"></script><!--DRAGGABLE UL-->
+    <!--<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+    <!--<script src="js/jquery.mjs.nestedSortable.js"></script>-->
+    <script src="js/jquery-sortable.js"></script>
+    <script>
+    $(function() {
+        $("#menu-root").sortable({
+            items: "li:not(.ui-state-disabled)",
+            over: function(event, ui) {
+                console.log("just dropped", $(this));
+            }
+        });
+        //$("#menu-root").disableSelection();
+        //$('.sortable').nestedSortable({
+        //      listType: 'ul',
+        //      handle: 'span',
+        //      items: 'li',
+        //      isAllowed: function (placeholder, placeholderParent, currentItem) {
+        //          if (placeholder.next().attr('class') != 'ui-state-default') {
+        //              return false;
+        //          }
+        //          if (placeholderParent){
+        //              console.log(placeholder, placeholderParent, currentItem)
+        //              if (placeholderParent.children().length == 1){
+        //                  return false;
+        //              }
+        //          }
+        //          return true;
+        //          }
+        //  });
+    });
+    </script>
+</nav>
