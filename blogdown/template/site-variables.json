@@ -1,0 +1,20 @@
+{
+	"site_title": "rodrigo palacios",
+	"title": "rodri.cios",
+	"root": "static", 
+	"index": "index.md", 
+	"nav_list": [
+		["Posts", "/posts"],
+		["GitHub", "https://github.com/rodricios"], 
+		["CV", "/files/CV-RodrigoPalacios.pdf"]
+	],
+	"files": [
+		{
+			"title": "A smorgasbord of nomenclature-hate speech",
+			"path": "posts/index.md"
+		}, {
+			"title": "autocomplete & a compression algorithm",
+			"path": "posts/autocomplete_and_compression.md"
+		}		
+	]
+}

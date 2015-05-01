@@ -1,15 +1,14 @@
-"""
-blogdown
-"""
 import os
+import shutil
 import json
+
 import markdown
 from tinydb import TinyDB
 from bottle import request, route, run, view,\
             static_file, install, TEMPLATE_PATH,\
             template, app
-
 get_url = app[0].get_url
+
 
 ####### PATH CONSTANTS #######
 THIS_FILE = os.path.dirname(__file__)
@@ -83,130 +82,29 @@ def generate_static(**sitevars):
 
 gen = generate_static
 
-def load_site_variables(callback):
-    def wrapper(*args, **kwargs):
-        """
-        Get site variables (located in /templates/site-variables.json)
-        """
-        kwargs['sitevars'] = SITEVARS
-        return callback(*args, **kwargs)
-    return wrapper
-
-
-@route('/', apply=[load_site_variables])
-@view('index.tpl')
-def index(sitevars):
-    """
-    Return index.tpl
-    """
-    devmode = True
-    return {"devmode": devmode, "sitevars": sitevars}
-
-
-@route('/posts')
-@view('posts.html')
-def posts():
-    """
-    Return posts.html
-    """
-    return
-
-
-@route('/static/<path:path>')
-def static(path):
-    """
-    # TODO
-    """
-    path, filename = os.path.split(path)
-    
-    #html_md_text = md_to_html(p)
-    #return template('index.tpl', sitevars=SITEVARS, body=html_md_text)
-    return static_file(filename, os.path.join(STATIC_DIR, path))
-
 
 @route('/css/<path:path>', name='css')
 def css(path):
     """
     Return static css files
     """
-    
     return static_file(path, CSS_PATH, mimetype='text/css')
 
 
-@route('/files/<path:path>')
-def files(path):
+def dump(path):
+    """Save necessary github-pages files and subfolders to specified path.
+
+    :param path: path where new github-pages will be located
     """
-    Return static file attachments
-    """
-    return static_file(path, FILES_PATH)
+    if os.path.exists(path):
+        override = raw_input("\n" + path +
+                             " exists already. This action will override " +
+                             "the existing folder's contents.\ny/n?\n")
 
-
-@route('/js/<path:path>')
-def js(path):
-    """
-    Return static css files
-    """
-    return static_file(path, JS_PATH, mimetype='text/js')
-
-
-@route('/img/<path:path>')
-def img(path):
-    """
-    Return static img files
-    """
-    return static_file(path, IMG_PATH)
-
-
-run(host='localhost', reloader=True, port=8088, debug=True)
-
-
-@route('/new/<type>/<path:path>')
-def new(type, path):
-    """
-    Client api to make new folder and/or post
-    """
-
-    print("making new", type, path)
-
-    if type == "folder":
-        folders, filename = os.path.split(path)
-
-        try:
-            os.makedirs(os.path.join(DIRS, folders))
-            print("created new folder[s]", folders)
-
-        except (WindowsError, Exception):
-            print("failed making new folder[s]", folders)
-            return {'result':'failure'}
-
-    with open(os.path.join(DIRS, path), 'w') as newfile:
-        pass
-
-    print("created new file", path)
-    return {'result':'success'}
-
-
-@route('/save-site')
-def save_site():
-    """
-    # TODO
-    """
-    site = request.json['site']
-    return
-
-def json_to_html_ul(d,tag=""):
-    """
-
-    """
-    tag = "<ul>"
-
-    for key in d:
-        tag += "<li>" + key
-
-        if type(d[key])==type({}):
-            tag += json_to_html_ul(d[key],"") + "</li>"
+        if override.lower() == "y":
+            shutil.rmtree(path)
         else:
-            tag += "</li>"
+            print("Goodbye!")
+            sys.exit()
 
-    tag += "</ul>"
-    return tag
+    shutil.copytree(STATIC_DIR, path)

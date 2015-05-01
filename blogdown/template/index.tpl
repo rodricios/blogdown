@@ -14,5 +14,11 @@ setdefault('author_avatar', 'author avatar here')
 
 <!-- A wrapper for all the blog posts -->
 <div class="posts">
-    <h1 class="content-subhead">{{content_subhead}}</h1>
+    <h1 class="content-subhead"></h1>
+
+    <div class="post-description">
+        <section class="post">
+            {{!body}}
+        </section>
+    </div>
 </div>
