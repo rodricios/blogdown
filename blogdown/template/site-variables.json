@@ -3,18 +3,28 @@
 	"title": "rodri.cios",
 	"root": "static", 
 	"index": "index.md", 
-	"nav_list": [
-		["Posts", "/posts"],
-		["GitHub", "https://github.com/rodricios"], 
-		["CV", "/files/CV-RodrigoPalacios.pdf"]
-	],
+	"nav_list": {
+		"Posts": "/posts",
+		"GitHub": "https://github.com/rodricios",
+		"CV": "/files/CV-RodrigoPalacios.pdf"
+	},
 	"files": [
 		{
-			"title": "A smorgasbord of nomenclature-hate speech",
-			"path": "posts/index.md"
+			"title": "A smorgasbord of unoriginality",
+			"path": "posts/index.md",
+			"index": true, 
+			"section": "posts"
 		}, {
 			"title": "autocomplete & a compression algorithm",
-			"path": "posts/autocomplete_and_compression.md"
+			"path": "posts/autocomplete_and_compression.md",
+			"description": "What's that idiom about two birds and a stone? In a single post, you'll be introduced to compression algorithms and A.I.",
+			"image": "http://i.imgur.com/khrCYbT.jpg",
+			"section": "posts"
 		}		
-	]
+	], 
+	"footer": {
+		"Home": "/",
+		"Twitter": "https://twitter.com/rodricios/",
+		"GitHub": "https://github.com/rodricios/"
+	}
 }

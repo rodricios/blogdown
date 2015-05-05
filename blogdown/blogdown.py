@@ -47,42 +47,6 @@ def md_to_html(path):
     return html_md_text
     
     
-def generate_static(**sitevars):
-    # % rebase('base.html', navmenu=navmenu)
-    # get root directory of md files
-    join = os.path.join
-    root = sitevars.get('root', "")
-    
-    root_path = join(THIS_FILE, root)
-    index_md_path = join(root_path, sitevars['index'])
-    index_html_path = index_md_path.replace('.md', '.html')
-    
-    # /root/index.md
-    html_md_text = md_to_html(index_md_path)
-    #print("html_md_text", html_md_text)
-    # /root/index.html
-    with open(index_html_path, 'w') as output_file:
-        rendered_html = template('index.tpl', sitevars=SITEVARS, 
-                                body=html_md_text, get_url=get_url)
-        #print("rendered_html", rendered_html)
-        output_file.write(rendered_html)
-        
-    for md_file in sitevars['files']:
-        md_path = join(root_path, md_file['path'])
-        html_path = md_path.replace('.md', '.html')
-        
-        html_md_text = md_to_html(md_path)
-        
-        with open(html_path, 'w') as index_html:
-            html = template('index.tpl', 
-                            sitevars=sitevars,
-                            body=html_md_text,
-                            get_url=get_url)
-                            
-            index_html.write(html)
-
-gen = generate_static
-
 def load_site_variables(callback):
     def wrapper(*args, **kwargs):
         """

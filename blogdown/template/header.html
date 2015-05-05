@@ -1,10 +1,10 @@
 <div class="header">
     <h1 class="brand-title">
-        {{sitevars['title']}}
+        <a href="/">{{sitevars['title']}}</a>
     </h1>
     <nav class="nav">
         <ul class="nav-list">
-            % for name, href in sitevars['nav_list']:
+            % for name, href in sitevars['nav_list'].items():
             <li class="nav-item">
                 <a class="pure-button" href="{{href}}">{{name}}</a>
             </li>
