@@ -5,15 +5,18 @@ Distributions of Babel
 ![distribution of babel](http://i.imgur.com/8ISsT4j.jpg)
 <figcaption>Here we see the *Village People's* first public performance of *YMCA*.</figcaption>
 
-Ancient scriptures tell us that early ancient peoples were so well 
-organized, due to there being only one spoken and understandable 
-language, that they decided their next earthly feat would be to reach the heavens. 
+Ancient scriptures tell us that Babylon was a well organized city/state,
+supposedly as a result of there being only one spoken and understandable language.
+
+And of course, like all great cities, some high-level planning and cheap labor
+can do a lot:
 
 > “Come, let us build ourselves a city, and a tower whose top is in the heavens; 
 let us make a name for ourselves, lest we be scattered abroad over the face of the whole earth.
 
-The story goes on to say that God, for whatever reason, was not O.K. with these ancient people's 
-endeavor *of building a tower reaching the heavens* (who's the genius behind this plan?). 
+The biblical account of these times will go on to say that God, for whatever reason,
+was not O.K. with these ancient people's endeavor *of building a tower reaching the heavens*
+(who's the genius behind this plan?). 
 
 Logically speaking, if one is not O.K. with a direction that someone or some group is taking, 
 then the action one takes to derail that person's or group's plan is justified, right?
