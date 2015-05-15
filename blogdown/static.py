@@ -4,6 +4,7 @@ import json
 import sys
 
 import markdown
+
 from tinydb import TinyDB
 from bottle import request, route, run, view,\
             static_file, install, TEMPLATE_PATH,\
@@ -42,7 +43,14 @@ def md_to_html(path):
     """
     with open(path, 'r') as index_md:
         md_text = index_md.read()
-        html_md_text = markdown.markdown(md_text)
+        try:
+            html_md_text = markdown.markdown(md_text, [ 'markdown.extensions.fenced_code',
+                                                        'markdown.extensions.extra',
+                                                        'markdown.extensions.codehilite'])
+        except UnicodeDecodeError:
+            print(path)
+            raise
+            
     return html_md_text
     
     

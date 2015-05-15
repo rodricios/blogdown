@@ -10,14 +10,14 @@
 	},
 	"files": [
 		{
-			"title": "A smorgasbord of unoriginality",
+			"title": "Gross Oversimplifications",
 			"path": "posts/index.md",
 			"index": true, 
 			"section": "posts"
 		}, {
-			"title": "autocomplete & a compression algorithm",
-			"path": "posts/autocomplete_and_compression.md",
-			"description": "What's that idiom about two birds and a stone? In a single post, you'll be introduced to compression algorithms and A.I.",
+			"title": "Solving the Data Extraction Problem",
+			"path": "posts/solving_the_data_extraction_problem.md",
+			"description": "For once, there's too many smart people working on just one problem. It's time to move on.",
 			"image": "http://i.imgur.com/khrCYbT.jpg",
 			"section": "posts"
 		}		
