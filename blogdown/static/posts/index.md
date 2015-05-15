@@ -3,11 +3,11 @@ A collection of gross oversimplifications
 ---
 
 
-[Google's autocomplete and a compression algorithm](/posts/autocomplete_and_compression.html)
+[Solving the Data Extraction Problem](/posts/solving_the_data_extraction_problem.html)
 ---
 
 ![middle-out](http://i.imgur.com/khrCYbT.jpg)
 <figcaption>Photo:Isabella Vosmikova/HBO</figcaption>
 
 
-What's that idiom about two birds and a stone? In a single post, you'll be introduced to compression algorithms and A.I.
+For once, there's too many smart people working on just one problem. It's time to move on.

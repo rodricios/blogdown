@@ -7,15 +7,16 @@ A Python implementation of this work can be found on [GitHub](https://github.com
 
 ---
 
-Yes, the clickbait title was unashamedely intentional. No, I'm not formally
-solving anything (my apologies to all the formal-proof-loving people
-I've mislead into my post). Yes, there's an algorithm.
+Yes, the clickbait title was unashamedely intentional. No, I'm not 
+formally solving anything (my apologies to all the formal-proof-loving 
+people I've mislead into my post). Yes, there's an algorithm.
 
 ## *The algorithm*
 
 In not-so-plain words:
 
-> Given a tree, return a list of all subtrees - sorted by the number of children relative to the root node in the subtree.
+> Given a tree, return a list of all subtrees - sorted by the number
+of children relative to the root node in the subtree.
 
 In Python: 
 
@@ -29,8 +30,8 @@ In Python:
 
 	parsed_doc = html.fromstring(reddit_request.content)
 	
-	# In SQL-like terms: select all parents
-	parent_elements = parsed_doc.xpath('//*/..')
+	# In SQL-like terms: select all parents in <body>
+	parent_elements = parsed_doc.xpath('//body//*/..')
 	
 	parents_with_children_counts = []
 	
@@ -59,59 +60,63 @@ websites.
 
 ## *What sort of "data" are we extracting?*
 
-The correct answer, I'd argue, is: *the sort of data that's produced by 
-the source of that data*. But let's get specific. 
-
 Websites are structured by HTML (sure, the styling is also partially 
 responsible for the *visual* structure, but as you'll see later on, 
-we don't *have* to take style sheets into account).
+we don't *have* to take style sheets into account). It's in the 
+structured HTML where you'll find "unstructured data".
 
 Before I continue, I'll give a bit of background as to why the heck 
 I'm even tackling this problem. 
 
 About 4 months ago, I debuted [eatiht](https://github.com/rodricios/eatiht) 
 (a text-extracting library; the predecessor to this algorithm) on [reddit](http://www.reddit.com/r/compsci/comments/2ppyot/just_made_what_i_consider_my_first_algorithm_it/).
-I can only say positiive things about doing so. For one, it's landed me an opportunity
-to coauthor a paper with [Tim Weninger](http://www3.nd.edu/~tweninge/). 
+I can only say positiive things about doing so. For one, it's landed me an
+opportunity to coauthor a paper with [Tim Weninger](http://www3.nd.edu/~tweninge/). 
 
-It was Tim who introduced me to the *structured [tabular] data extraction* problem. 
-He illustrated the scenario of trying to extract ``<table>``'s and table-like 
-structures from a website.
+It was Tim who introduced me to the *structured [tabular] data extraction*
+problem. He illustrated the scenario of trying to extract ``<table>``'s and 
+table-like structures from a website like [reddit](http://www.reddit.com). 
+Here's what he says about that:
 
-### *A wild problem appears!*
+> The first [candidate] is the list of subreddits across the top of 
+the page ... The second is the list of reddit posts with link, time, 
+username, and a bunch of other things. The front page of reddit is 
+nothing more than a stylized set of multi-attribute lists or tables. 
 
-Let's take [reddit](http://www.reddit.com):
+## *A wild problem appears!*
 
-<figure> 
+Let's get a better picture of what Tim means:
+
+<figure markdown="1"> 
 	![reddit tables](http://i.imgur.com/OsA7Iiyh.png) 
-	<figcaption> 
-		Highlighted in red are examples of tabular data (a.k.a. *structured data, lists*) 
+	<figcaption markdown="1"> 
+		Websites are like a series of tables...
 	</figcaption> 
 </figure>
 
-What's highlighted in red is what I'm referring to as *structured* or *tabular data*. 
+What's highlighted in red is what is meant by *structured* or *tabular data*. 
 
 Since we're dealing with HTML, let's have a look at the underlying markup: 
 
-<figure> 
+<figure markdown="1"> 
 	![subreddits](http://i.imgur.com/d3cFlB8l.png) 
-	<figcaption>
+	<figcaption markdown="1"> 
 		subreddits - there's a lot of ``li``'s 
 	</figcaption> 
 </figure>
 
 
-<figure>
-	![top posts](http://i.imgur.com/78rNdf4l.png)
-	<figcaption>
+<figure markdown="1"> 
+	![top posts](http://i.imgur.com/78rNdf4l.png) 
+	<figcaption markdown="1"> 
 		top posts - there's a lot of ``div``'s 
 	</figcaption>
 </figure>
 
-Looking at the above pictures, one thing should be clear: although ``<table>``'s 
-are the epitome of **tabular data**, there are no ``<table>``'s in the above 
-HTML. But despite the lack of tables, it should be clear that there is tabular data on the 
-front page of Reddit.
+Looking at the above pictures, one thing should be clear: although
+``<table>``'s are the epitome of **tabular data**, there are no 
+``<table>``'s in the above HTML. But despite the lack of tables, it 
+should be clear that there is tabular data on the front page of Reddit.
 
 So what do? 
 
@@ -120,31 +125,33 @@ So what do?
 Clearly define what the problem is: 
 
 *__Data__ (in the context of HTML) are collections of HTML elements. 
-Visually, data is presented as rows or columns. Structurally, data 
-is presented as a collection (__parent element__) of (__children__) elements.*
+Visually, data is presented as rows or columns (usually). Structurally, 
+data is presented as a collection (__parent element__) of __children 
+elements__.*
 
-Some of you guys/gals may have asked *Aren't we practically talking about every
-element in an HTML tree?*
+Some of you guys/gals may have asked *This definition is ambiguous. 
+We're practically talking about every element in an HTML tree.*
 
 Yup.
 
 But now throw the phrase *frequently occuring* into the definition:
 
 *Structurally, data is presented as a collection (__parent element__)
-of __frequently occurring__ (__children__) elements.*
+of __frequently occurring__ __children elements__.*
 
 To reiterate clearly (hopefully):
 
-1. We're looking for the *parents* of any elements of any tag.
+1. We're looking for the *parents* of elements of any tag.
 
-2. We're looking for repetitive elements, or rather the *counts* of repetitive elements
+2. We're looking for repetitive elements, or rather the *counts* of 
+repetitive elements
 
-In the case of reddit.com, we'd like to create some solution that will retrieve at least two collections:
-the ``<ul>`` containing those ``<li>``'s; the parent ``<div>`` containing those inner ``<div>``'s. 
+In the case of reddit.com, we'd like to create some solution that will 
+retrieve at least two collections: the ``<ul>`` containing those 
+``<li>``'s; the parent ``<div>`` containing those inner ``<div>``'s. 
 
-There's a catch: we can't directly target those HTML elements.
-
-Having said all that, let's take out my prototyping weapon of choice, Python, and get to it. 
+Having said all that, let's take out my prototyping weapon of choice, 
+Python, and get to it. 
 
 ## Solution
 
@@ -171,23 +178,22 @@ From here, we can start doing things like querying for different
 types of nodes (HTML elements). But we're not looking for a specific 
 *type* of node - where by *type* I mean [*tag*](http://www.w3schools.com/tags/ref_byfunc.asp). 
 
-*We're looking for the __parents__ of any elements of any tag.*
+*We're looking for the __parents__ of elements of any tag.*
 
 ```python
-	# In SQL-like terms: select all parents
-	parent_elements = parsed_doc.xpath('//*/..')
+	# In SQL-like terms: select all parents in body
+	parent_elements = parsed_doc.xpath('//body//*/..')
 	
-	# >>> parent_elements
-	# [<Element html at 0x5a69818>,
-	# <Element head at 0x5f4abd8>,
-	# <Element body at 0x5f4ac28>,
-	# <Element div at 0x5f4ac78>,
-	# <Element div at 0x5f4acc8>,
-	# <Element div at 0x5f4ad18>,
-	# ..]
+	# >>> parent_elements[:5]
+	# [<Element body at 0x5a69958>,
+	#  <Element div at 0x5a699a8>,
+	#  <Element div at 0x5c37a98>,
+	#  <Element div at 0x5c37ae8>,
+	#  <Element div at 0x5c379a8>]
 ```
 
-*We're looking for repetitive elements, or rather the __counts__ of repetitive elements*
+And *we're looking for repetitive elements, or rather the __counts__ of 
+repetitive elements*
 
 ```python
 	from collections import Counter
@@ -199,41 +205,40 @@ types of nodes (HTML elements). But we're not looking for a specific
 	    parents_with_children_counts.append((parent, children_counts))
 		
 	# >>> parents_with_children_counts[:5]
-	# [(<Element html at 0x5a69818>, Counter({'head': 1, 'body': 1})),
-	# (<Element head at 0x5f4abd8>, Counter({'script': 7, ..., 'title': 1, 'style': 1})),
-	# (<Element body at 0x5f4ac28>, Counter({'script': 4, 'div': 4, 'a': 1, 'p': 1})),
-	# (<Element div at 0x5f4ac78>, Counter({'div': 3, 'a': 1})),
-	# (<Element div at 0x5f4acc8>, Counter({'div': 1}))]
+	# [(<Element body at 0x5a69958>, Counter({'script': 4, 'div': 4, 'a': 1, 'p': 1})),
+	#  (<Element div at 0x5a699a8>, Counter({'div': 3, 'a': 1})),
+	#  (<Element div at 0x5c37a98>, Counter({'div': 1})),
+	#  (<Element div at 0x5c37ae8>, Counter({'div': 3, 'a': 1})),
+	#  (<Element div at 0x5c379a8>, Counter({'span': 1}))]
 ```
 
-Finally, let's sort our list of parent, child counter by the *frequency* of the most common 
-element in each *child counter*.
+Finally, let's sort our list of parent, child counter by the *frequency* 
+of the most common element in each *child counter*.
 
 ```python 
 	# This line, one could say, is what wraps this data-extraction 
 	# algorithm as a maximization/optimization algorithm
-	parents_with_children_counts = sorted(parents_with_children_counts, 
-	                                      # x[1] is the Counter object
-	                                      # x[1].most_common(1) gets the most frequent element
-	                                      # x[1].most_common(1)[0][1] gets the frequency value
-	                                      key=lambda x: x[1].most_common(1)[0][1], 
-	                                      reverse=True)
-										  
+	parents_with_children_counts.sort(# x[1] is the Counter object
+                                      # x[1].most_common(1) gets the most frequent element
+                                      # x[1].most_common(1)[0][1] gets the frequency value
+                                      key=lambda x: x[1].most_common(1)[0][1], 
+                                      reverse=True)
+
 	# >>> parents_with_children_counts[:5]
 	# [(<Element div at 0x5f4ae08>, Counter({'a': 51})),
-	# (<Element div at 0x5f64048>, Counter({'div': 51})),
-	# (<Element ul at 0x5f5f048>, Counter({'li': 48})),
-	# (<Element div at 0x5f613b8>, Counter({'div': 23})),
-	# (<Element ul at 0x5f60048>, Counter({'li': 8}))]								  
+	#  (<Element div at 0x5f64048>, Counter({'div': 51})),
+	#  (<Element ul at 0x5f5f048>, Counter({'li': 48})),
+	#  (<Element div at 0x5f613b8>, Counter({'div': 23})),
+	#  (<Element ul at 0x5f60048>, Counter({'li': 8}))]								  
 ```
 
-### Results
+## Results
 
-Let's print out the text content from each of the retrived (extracted) elements' children:
+Let's print out the text content from each of the retrived (extracted) 
+elements' children:
 
 ```python
-	>>> for child in parents_with_children_counts[0][0]:
-    >>> 	print(child.text_content())
+	>>> [elem.text_content() for elem in parents_with_children_counts[0][0].iterchildren()]
 	announcements
 	Art
 	AskReddit
@@ -245,14 +250,14 @@ Let's print out the text content from each of the retrived (extracted) elements'
 
 So where's that coming from?
 
-<figure>
-	![Hidden list of subreddits](http://i.imgur.com/s7W7R4Bl.png)
-	<figcaption> 
+<figure markdown="1"> 
+	![Hidden list of subreddits](http://i.imgur.com/s7W7R4Bl.png) 
+	<figcaption markdown="1"> 
 		Here's where. It's the *MY SUBREDDITS* button.
 	</figcaption>
 </figure>
 
-Let's get the text content of the second and third retrieved elements:
+Let's print out the text content of the second and third retrieved elements:
 
 ```python
 	for child in parents_with_children_counts[1][0]:
@@ -279,82 +284,287 @@ Let's get the text content of the second and third retrieved elements:
 
 *note: the results are different from the above image because I'm a slow writer.*
 
-After running the above steps on a [wikipedia page](http://en.wikipedia.org/wiki/Information_extraction), our top result is:
+Suffice to say that Tim's tabular data was extracted. But can this algorithm 
+extract other forms of data?
 
-> Information extraction (IE) is the task of automatically extracting structured information from unstructured and/or semi-structured machine-readable documents. In most of the cases this activity concerns processing human language texts by means of natural language processing (NLP). Recent activities in multimedia document processing like automatic annotation and content extraction out of images/audio/video could be seen as information extraction. ...
+After running the algorithm on a [wikipedia page](http://en.wikipedia.org/wiki/Information_extraction), 
+our top result is:
 
-In case anyone is wondering, the top result yielded the div containing the main article of the wiki page.
+> Information extraction (IE) is the task of automatically extracting 
+structured information from unstructured and/or semi-structured 
+machine-readable documents. In most of the cases this activity concerns 
+processing human language texts by means of natural language processing 
+(NLP). Recent activities in multimedia document processing like automatic 
+annotation and content extraction out of images/audio/video could be seen 
+as information extraction. ...
+
+The algorithm yielded the div containing the main article of the wiki 
+page as its top result.
 
 ## Final Thoughts
 
-So far, we've been able to extract what we came to extract: tabular data and article text.
+So far, we've been able to extract what we came to extract: tabular data 
+and article text.
 
-To clarify, this algorithm extracts HTML elements that likely lead us to tabular data and article text. 
+This algorithm is able to exploit the fact that data exists on the same 
+depth, DOM-wise - whether it is the ``<p>``'s that make up the main article, 
+or the ``<li>``'s under a list.
 
-If people want to philosophize on reasons why this algorithm extracts
-not only tabular data but also article text, then please do so! 
+**This algorithm doesn't clean, convert, or format the extracted data.** This in itself 
+is another problem. Not in any way less interesting :)
 
-Undoubtedly, people will say *paragraph elements (``<p>``) are usually all 
-declared in the same level (ie. they are all siblings) of any given HTML document.
+Anyways, I'm done working on extraction problems.
 
-This algorithm doesn't convert or format the extracted data. This in itself is another problem. Not
-in any way less interesting :)
+## "Must have been thought of before"
 
-Anyways, I'm done working on extraction problems. I'd like to start working on something 
-that can feed me. Did I mention that I'm hireable? Maybe I should start a company...
+There's a lot of research that has been done in this area. But there's 
+one very important piece of work that should be mentioned before the rest:
 
-## Related work
-
-There's a lot of research that has been done in this area. But there's one very
-important piece of work that should be mentioned before the rest:
-
-[*Fact or fiction: content classification for digital libraries* (2001) - Aidan Finn, Nicholas Kushmerik, Barry Smyth](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.21.3834&rep=rep1&type=pdf)
+[*Fact or fiction: content classification for digital libraries* (2001) 
+- Aidan Finn, Nicholas Kushmerik, Barry Smyth](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.21.3834&rep=rep1&type=pdf)
 
 This 14 year old paper was not in my line of sight when I first wrote 
 this algorithm (around the time Tim had presented the tabular-data-extraction
 problem to me, which was 4 months ago). 
 
-Okay, technically it was in my line of sight. Someone had linked the article
-in a comment on my [eatiht post on reddit](http://www.reddit.com/r/compsci/comments/2ppyot/just_made_what_i_consider_my_first_algorithm_it/cmz1m4h).
+Okay, technically it was in my periphery. Someone had linked the article
+in a comment on my [reddit post](http://www.reddit.com/r/compsci/comments/2ppyot/just_made_what_i_consider_my_first_algorithm_it/cmz1m4h).
 
 Here's the thing, my lexicon at the time was so limited that I couldn't even 
 acknowledge/respond to Yacoby's question about whether or not I 
 "considered using a simple maximisation algorithm?" 
 
-I should have responded with, *eatiht is a maximization algorithm*; instead, and I remember
-this clearly, I was describing the algorithm up to the point of what's known 
-as the [argmax](http://en.wikipedia.org/wiki/Arg_max) step (for whatever
-reason, I couldn't put 2 and 2 together). 
+I should have responded with, *eatiht is a maximization algorithm*; instead, 
+and I remember this clearly, I was describing the algorithm up to the point 
+of what's known as the [argmax](http://en.wikipedia.org/wiki/Arg_max) 
+calculation (for whatever reason, I couldn't put 2 and 2 together). 
 
 Anyways, logically what should and would have followed after that
 is a big moment of *Ohhhhh... It's been done before, and here it is:*
 
-> The [information extraction] problem can now be viewed as an 
-optimization problem. We must identify points i and j such that
-we maximize the number of tag tokens below i and above j, while 
-simultaneously maximizing the number of text tokens between i 
-and j. The text is only extracted between i and j. 
+> The [text extraction] problem can now be viewed as an optimization 
+problem. We must identify points i and j such that we maximize the 
+number of tag tokens below i and above j, while simultaneously maximizing 
+the number of text tokens between i and j. The text is only extracted 
+between i and j. 
 
 I waited until I started gathering resources for this post; I read Yacoby's 
-suggestion once again; I actually opened looked up the paper; I pressed ``ctrl-F``;
-I typed "maxim". I had that moment like I had described above. 
+suggestion once again; I looked for and found the paper; I ``ctrl-F``'ed;
+I typed "maxim". I had that moment like I describe above. 
 
 All I can say about repeating 14 year old work is that [rediscovery of work](http://en.wikipedia.org/wiki/Gregor_Mendel#Rediscovery_of_Mendel.27s_work) happens.
-According to an uncle of mine, who also happens to be a mathematician, 
-history surrounding wavelet theory has that "work rediscovery" element 
-in it. 
+According to an uncle of mine, wavelet theory has that "work rediscovery" element 
+in its history.
 
-Anyways, is this algorithm a straight-up rework of *Fact or
-fiction*? In my opinion, no. Is the previous (eatiht) algorithm I worked on
-a rework/rediscovery of *Fact or fiction*? I'd say yes. 
+Anyways, is this particular algorithm a straight-up rework of *Fact or fiction*? 
+In my opinion, no. Is the previous (eatiht) algorithm I worked on a rework 
+of *Fact or fiction*? I'd say I "rediscovered" it. 
 
-The authors of *Fact or fiction* are describing the solution to
-an "optimization" algorithm that can extract text. 
+The authors of *Fact or fiction* are describing an "optimization" algorithm 
+that can extract text. 
 
 They were very close to describing the more general algorithm that 
 I describe in this post, and that I have yet to pin a name to. Any ideas?
 
-#### More related work
+If anyone knows of a similar solution, please let me know in the comments! 
+
+Now onto the realm of startups. 
+
+## Closed-source solutions
+
+There's a fair bit of options: 
+
+* [import.io](https://import.io/) 
+
+* [embed.ly](http://embed.ly/)
+
+* [diffbot.com](https://www.diffbot.com/)
+
+All of these solutions essentially run on top of extraction algorithms.
+Import.io is probably the one I'd recommend for broke college students - 
+their service is free. It's when a user-soon-to-be-client's 
+demands increase that import.io's profit model kicks in. Smart. 
+
+Embedly made a clever move in finding a niche market and exploiting it. 
+They make it easy for, say, *The New York Times* to make links to other
+articles on their site - a pretty little "card" is created that contains
+a snippet from an article, and optionally an image. For developers, they
+provide services to create embeds, extract text, etc. 
+
+Diffbot seems to be the one playing it safe, providing services for 
+multiple types of extractions jobs (article text, product pages (\*cough\*
+tabular data \*cough\*). One differentiating factor that diffbot has is 
+its crawling engine. 
+
+Want to see how each one fares against this algorithm?
+
+*__Note: the following is not, by any reasonable standard, a "benchmark".__ 
+My apologies if the lack of sophistication offends anyone.*
+
+### Wikipedia
+
+*target: [AOL's wikipage](http://en.wikipedia.org/wiki/AOL)*
+
+I'll provide links to each service's request so that you can see the
+results first hand (all but diffbot have url-reachable demos).
+
+#### Diffbot
+
+<figure markdown="1"> 
+	![AOL wiki - diffbot](http://i.imgur.com/MzV1brol.png) 
+	<figcaption markdown="1"> 
+		Ey! They extracted the text!
+	</figcaption>
+</figure>
+
+#### import.io
+
+<figure markdown="1"> 
+	![AOL wiki - import.io](http://i.imgur.com/TqHjIxNl.png) 
+	<figcaption markdown="1"> 
+		[Test it out.](https://magic.import.io/?site=http:%2F%2Fen.wikipedia.org%2Fwiki%2FAOL)
+		They managed to extract the references at the bottom of the article - but no article.
+	</figcaption>
+</figure>
+
+#### embed.ly
+
+<figure markdown="1"> 
+	![AOL wiki - embed.ly](http://i.imgur.com/7sXC0p6l.png) 
+	<figcaption markdown="1"> 
+		[Test it out.](http://embed.ly/docs/explore/extract?url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FAOL)
+		They provide some pretty useful databites, but not the main content :(
+	</figcaption>
+</figure>
+
+#### libextract
+
+[Libextract](https://github.com/datalib/libextract) is the name of the library
+that implements this algorithm. To demonstrate the results, I render the
+unstyled HTML of the extracted elements. Or in other words, it's going
+to look ugly.
+
+Best result: 
+
+<figure markdown="1"> 	
+	![AOL wiki - libextract](http://i.imgur.com/sQ5WbCZl.png) 
+	<figcaption markdown="1"> 
+		No style is the new style. Here we've extract the references.
+	</figcaption>
+</figure>
+
+Second best result:
+
+<figure markdown="1"> 
+	![AOL wiki - libextract](http://i.imgur.com/PTHYH2rl.png) 
+	<figcaption markdown="1"> 
+		Here you can see we've extacted the main body of the wiki page. 
+		It's clear how awesome it would be to have post-processing, data-cleaning
+		steps. Maybe for the next release?
+	</figcaption>
+</figure>
+
+#### Reddit
+
+*target: [r/aww](http://www.reddit.com/r/aww)*
+
+
+#### import.io
+<figure markdown="1"> 
+	![r/aww - import.io](http://i.imgur.com/f6Qzi6Ll.png) 
+	<figcaption markdown="1">  
+		[Test it out.](https://magic.import.io/?site=http:%2F%2Fwww.reddit.com%2Fr%2Faww)
+		Import.io clearly has the upper hand. They elegantly clean the data into a tabular format.
+	</figcaption>
+</figure>
+
+#### Diffbot
+
+<figure markdown="1"> 
+	![r/aww - diffbot](http://i.imgur.com/4b3FBojl.png) 
+	<figcaption markdown="1"> 
+		Diffbot results are similar to import.io's, minus the fancy styling.
+	</figcaption>
+</figure>
+
+#### embed.ly
+
+<figure markdown="1"> 
+	![r/aww - embed.ly](http://i.imgur.com/G3tpLnIl.png) 
+	<figcaption markdown="1"> 
+		[Test it out.](http://embed.ly/docs/explore/extract?url=http%3A%2F%2Fwww.reddit.com%2Fr%2Faww)
+		Embed.ly extracts the images fine, but nothing close to tabular data.
+	</figcaption>
+</figure>
+
+#### libextract
+
+Second best result: 
+
+<figure markdown="1"> 
+	![r/aww - libextract](http://i.imgur.com/vLxPJiyl.png) 
+	<figcaption markdown="1"> 
+		Like Diffbot and import.io's but absolutely no styling. 
+		I never said it would look pretty.
+	</figcaption>
+</figure>
+
+The top result is the top bar subreddits. No point in showing that. 
+
+### NYTimes
+
+*target: [NYTimes - Dead birds](http://www.nytimes.com/2015/05/15/business/bird-flu-outbreak-chicken-farmers.html)*
+
+#### embed.ly
+
+<figure markdown="1"> 
+	![nytimes - embed.ly](http://i.imgur.com/BV4C6Cyl.png) 
+	<figcaption markdown="1"> 
+		[Test it out.](http://embed.ly/docs/explore/extract?url=http%3A%2F%2Fwww.nytimes.com%2F2015%2F05%2F15%2Fbusiness%2Fbird-flu-outbreak-chicken-farmers.html)
+		Embed.ly wins this one (at least in terms of presentation), as its "cards" are something not seen in other the other extractors.
+	</figcaption>
+</figure>
+
+#### Diffbot
+
+<figure markdown="1"> 
+	![nytimes - diffbot](http://i.imgur.com/uPMKocyl.png) 
+	<figcaption markdown="1"> 
+		Diffbot handles this one well. 
+	</figcaption>
+</figure>
+
+#### import.io
+<figure markdown="1"> 
+	![nytimes - import.io](http://i.imgur.com/2hFNLeKl.png) 
+	<figcaption markdown="1"> 
+		[Test it out.](https://magic.import.io/?site=http:%2F%2Fwww.nytimes.com%2F2015%2F05%2F15%2Fbusiness%2Fbird-flu-outbreak-chicken-farmers.html)
+		Import.io is like, *meh, just another website for me*.
+	</figcaption>
+</figure>
+
+#### libextract
+
+
+<figure markdown="1"> 
+	![nytimes - libextract](http://i.imgur.com/FsWpOJ5l.png) 
+	<figcaption markdown="1"> 
+		That's it, data cleaning (and styling) is libextract's next feature.
+	</figcaption>
+</figure>
+
+
+### More related work
+
+Most work in tabular data extraction focuses mainly on HTML ``<table>`` 
+extraction and processing. For instance, some tables have column of 
+only numerical values. A proper "processing" step would make note of 
+that column's datatype (and possibly coerce the datatype in code).
+
+[*Mining Tables from Large Scale HTML Texts* (2000) - Hsin-Hsi Chen, Shih-Chung Tsai and Jin-He Tsai*](http://www.aclweb.org/anthology/C00-1025)
+
+A well-cited approach to deducing a ``<table>``'s schema - or what some 
+call "extracting table schema".
 
 [*WebTables: Exploring the Power of Tables on the Web* (2008) - Michael J. Cafarella, Alon Halevy, Zhe Daisy Wang, Eugene Wu Yang Zhang](http://yz.mit.edu/papers/webtables-vldb08.pdf)
 
@@ -381,3 +591,17 @@ properties for rent, or job offers.
 
 Not to bash on the merits of the above research, none of those 
 solutions are easily available for the rest of us. 
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'rodricios';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
