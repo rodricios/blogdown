@@ -185,8 +185,9 @@ h3 {
 
 @media (min-width: 48em) {
     .content {
-        padding: 2em 3em 0;
-        margin-left: 25%;
+        /*padding: 2em 3em 0;*/
+        padding: 2em 2em 0;
+        margin-left: 20%;
     }
 
     .save-section {
@@ -260,7 +261,7 @@ h3 {
     /*    display: block;*/
     /*    background: rgba(0, 0, 0, 0.78);*/
     /*    color: #fefefe;*/
-    /*    /*padding: .75em .50em;*/*/
+    /*    /*padding: .75em .50em;*/
     /*    border-radius: 0.15em;*/
     /*    transition: background .3s ease;*/
     /*}*/

@@ -115,7 +115,11 @@ def generate_static(**sitevars):
         html_path = md_path.replace('.md', '.html')
         
         html_md_text = md_to_html(md_path)
+        sitevars['site_title'] = md_file['title']
         
+        if 'ad' in md_file: 
+            sitevars['ad'] = md_file['ad']
+               
         with open(html_path, 'w') as index_html:
             html = template('index.tpl', 
                             sitevars=sitevars,

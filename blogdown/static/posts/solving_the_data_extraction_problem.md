@@ -1,15 +1,34 @@
-Solving the Data Extraction Problem
+Solving the Data Extraction Problem in 10 lines
 ===
 
 #####By Rodrigo Palacios, follow me on [twitter](https://twitter.com/rodricios), and [github](https://github.com/rodricios)
 
-A Python implementation of this work can be found on [GitHub](https://github.com/datalib/libextract).
+*[Libextract](https://github.com/datalib/libextract) - extract data from the web (a Python implementation of this work)*.
 
 ---
 
-Yes, the clickbait title was unashamedely intentional. No, I'm not 
-formally solving anything (my apologies to all the formal-proof-loving 
-people I've mislead into my post). Yes, there's an algorithm.
+<img class="pure-img" src="https://i.imgur.com/Xfb8zYE.jpg?2" alt="Data extraction at it's root" title="Maybe here, no, here? No... man, they said I'd find Ja Rule's albums here..."></img>
+
+
+In the grand scheme of things, extracting data from the web is a small step in a 
+much larger objective. But in the micro, *data extraction* appears to us as a problem
+that has no real definitive solution, a sort of *dirty job* - how often is the task
+relegated as that of "scraping" the web?
+
+Just think about how many times you've ran into this type of web-scraping tutorial: 
+download HTML, parse HTML, open dev tools, flip back-and-forth between browser and 
+console, debug your [XPath](http://en.wikipedia.org/wiki/XPath) expressions, etc. 
+
+On the other hand, data extraction via web-scraping has seemlessly, and sometimes elegantly,
+found its way into larger projects ([Apache Nutch](http://nutch.apache.org/) includes [Tika](http://tika.apache.org/), 
+[Scrapy](http://scrapy.org/) has hybrid crawl-n-scrape architecture). Needless to
+say, they're designed to give you - the developer, the data scientist, the hacker, the
+one with time to spare - a lot of control... to a fault. But at least they provide XPath
+ tutorials ([\[1\]](http://tika.apache.org/1.8/examples.html#Fetching_just_certain_bits_of_the_XHTML) 
+[\[2\]](http://doc.scrapy.org/en/0.24/intro/tutorial.html?highlight=data%20extraction#extracting-items)).
+
+In this post, I present an informal solution to the data extraction problem. It's 
+short, it's sweet, and it leaves much room for improvement. Enjoy :) 
 
 ## *The algorithm*
 
@@ -41,8 +60,7 @@ In Python:
 
 	# This line, one could say, is what wraps this data-extraction 
 	# algorithm up as a maximization/optimization algorithm
-	parents_with_children_counts.sort(# x[1].most_common(1) gets the most frequent element
-                                      # x[1].most_common(1)[0][1] gets the frequency value
+	parents_with_children_counts.sort(# x[1].most_common(1)[0][1] gets the frequency value
                                       key=lambda x: x[1].most_common(1)[0][1], 
                                       reverse=True)
 ```
@@ -70,7 +88,7 @@ I'm even tackling this problem.
 
 About 4 months ago, I debuted [eatiht](https://github.com/rodricios/eatiht) 
 (a text-extracting library; the predecessor to this algorithm) on [reddit](http://www.reddit.com/r/compsci/comments/2ppyot/just_made_what_i_consider_my_first_algorithm_it/).
-I can only say positiive things about doing so. For one, it's landed me an
+I can only say positive things about doing so. For one, it's landed me an
 opportunity to coauthor a paper with [Tim Weninger](http://www3.nd.edu/~tweninge/). 
 
 It was Tim who introduced me to the *structured [tabular] data extraction*
@@ -85,10 +103,10 @@ nothing more than a stylized set of multi-attribute lists or tables.
 
 ## *A wild problem appears!*
 
-Let's get a better picture of what Tim means:
+Let's get a better picture of what Tim is saying:
 
 <figure markdown="1"> 
-	![reddit tables](http://i.imgur.com/OsA7Iiyh.png) 
+	<img class="pure-img" src="https://i.imgur.com/OsA7Iiyl.png" alt="reddit tables" title=""></img> 
 	<figcaption markdown="1"> 
 		Websites are like a series of tables...
 	</figcaption> 
@@ -99,15 +117,15 @@ What's highlighted in red is what is meant by *structured* or *tabular data*.
 Since we're dealing with HTML, let's have a look at the underlying markup: 
 
 <figure markdown="1"> 
-	![subreddits](http://i.imgur.com/d3cFlB8l.png) 
+	<img class="pure-img" src="https://i.imgur.com/d3cFlB8l.png" alt="subreddits" title=""></img> 
 	<figcaption markdown="1"> 
 		subreddits - there's a lot of ``li``'s 
 	</figcaption> 
 </figure>
 
 
-<figure markdown="1"> 
-	![top posts](http://i.imgur.com/78rNdf4l.png) 
+<figure markdown="1"> 	
+	<img class="pure-img" src="https://i.imgur.com/78rNdf4l.png" alt="top posts" title=""></img> 
 	<figcaption markdown="1"> 
 		top posts - there's a lot of ``div``'s 
 	</figcaption>
@@ -116,7 +134,7 @@ Since we're dealing with HTML, let's have a look at the underlying markup:
 Looking at the above pictures, one thing should be clear: although
 ``<table>``'s are the epitome of **tabular data**, there are no 
 ``<table>``'s in the above HTML. But despite the lack of tables, it 
-should be clear that there is tabular data on the front page of Reddit.
+should also be clear that there is tabular data on the front page of Reddit.
 
 So what do? 
 
@@ -129,15 +147,15 @@ Visually, data is presented as rows or columns (usually). Structurally,
 data is presented as a collection (__parent element__) of __children 
 elements__.*
 
-Some of you guys/gals may have asked *This definition is ambiguous. 
-We're practically talking about every element in an HTML tree.*
+Some of you guys and gals may be thinking, "This definition is ambiguous. 
+We're practically talking about every element in an HTML tree."
 
 Yup.
 
 But now throw the phrase *frequently occuring* into the definition:
 
-*Structurally, data is presented as a collection (__parent element__)
-of __frequently occurring__ __children elements__.*
+*Structurally, data is presented as a collection (parent element)
+of __frequently occurring__ children elements.*
 
 To reiterate clearly (hopefully):
 
@@ -212,15 +230,13 @@ repetitive elements*
 	#  (<Element div at 0x5c379a8>, Counter({'span': 1}))]
 ```
 
-Finally, let's sort our list of parent, child counter by the *frequency* 
+Finally, let's sort our list of parent-child counter pairs by the *frequency* 
 of the most common element in each *child counter*.
 
 ```python 
 	# This line, one could say, is what wraps this data-extraction 
 	# algorithm as a maximization/optimization algorithm
-	parents_with_children_counts.sort(# x[1] is the Counter object
-                                      # x[1].most_common(1) gets the most frequent element
-                                      # x[1].most_common(1)[0][1] gets the frequency value
+	parents_with_children_counts.sort(# x[1].most_common(1)[0][1] gets the frequency value
                                       key=lambda x: x[1].most_common(1)[0][1], 
                                       reverse=True)
 
@@ -251,7 +267,7 @@ elements' children:
 So where's that coming from?
 
 <figure markdown="1"> 
-	![Hidden list of subreddits](http://i.imgur.com/s7W7R4Bl.png) 
+	<img class="pure-img" src="https://i.imgur.com/s7W7R4Bl.png" alt="Hidden list of subreddits" title=""></img> 
 	<figcaption markdown="1"> 
 		Here's where. It's the *MY SUBREDDITS* button.
 	</figcaption>
@@ -346,7 +362,7 @@ is a big moment of *Ohhhhh... It's been done before, and here it is:*
 problem. We must identify points i and j such that we maximize the 
 number of tag tokens below i and above j, while simultaneously maximizing 
 the number of text tokens between i and j. The text is only extracted 
-between i and j. 
+between i and j. - *from pg. 3 of __Fact or fiction__*
 
 I waited until I started gathering resources for this post; I read Yacoby's 
 suggestion once again; I looked for and found the paper; I ``ctrl-F``'ed;
@@ -369,6 +385,8 @@ I describe in this post, and that I have yet to pin a name to. Any ideas?
 If anyone knows of a similar solution, please let me know in the comments! 
 
 Now onto the realm of startups. 
+
+---
 
 ## Closed-source solutions
 
@@ -401,26 +419,28 @@ Want to see how each one fares against this algorithm?
 *__Note: the following is not, by any reasonable standard, a "benchmark".__ 
 My apologies if the lack of sophistication offends anyone.*
 
+---
+
 ### Wikipedia
 
 *target: [AOL's wikipage](http://en.wikipedia.org/wiki/AOL)*
 
-I'll provide links to each service's request so that you can see the
-results first hand (all but diffbot have url-reachable demos).
+I'll provide permalinks to each service's request so that you can see the
+results first hand. 
 
 #### Diffbot
 
 <figure markdown="1"> 
-	![AOL wiki - diffbot](http://i.imgur.com/MzV1brol.png) 
+	<img class="pure-img" src="https://i.imgur.com/MzV1brol.png" alt="AOL wiki - diffbot" title=""></img> 
 	<figcaption markdown="1"> 
-		Ey! They extracted the text!
+		[Test it out.](http://www.diffbot.com/testdrive/?api=article&url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FAOL) Ey! They extracted the text!
 	</figcaption>
 </figure>
 
 #### import.io
 
 <figure markdown="1"> 
-	![AOL wiki - import.io](http://i.imgur.com/TqHjIxNl.png) 
+	<img class="pure-img" src="https://i.imgur.com/TqHjIxNl.png" alt="AOL wiki - import.io" title=""></img> 
 	<figcaption markdown="1"> 
 		[Test it out.](https://magic.import.io/?site=http:%2F%2Fen.wikipedia.org%2Fwiki%2FAOL)
 		They managed to extract the references at the bottom of the article - but no article.
@@ -430,7 +450,7 @@ results first hand (all but diffbot have url-reachable demos).
 #### embed.ly
 
 <figure markdown="1"> 
-	![AOL wiki - embed.ly](http://i.imgur.com/7sXC0p6l.png) 
+	<img class="pure-img" src="https://i.imgur.com/7sXC0p6l.png" alt="AOL wiki - embed.ly" title=""></img> 
 	<figcaption markdown="1"> 
 		[Test it out.](http://embed.ly/docs/explore/extract?url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FAOL)
 		They provide some pretty useful databites, but not the main content :(
@@ -446,8 +466,8 @@ to look ugly.
 
 Best result: 
 
-<figure markdown="1"> 	
-	![AOL wiki - libextract](http://i.imgur.com/sQ5WbCZl.png) 
+<figure markdown="1"> 
+	<img class="pure-img" src="https://i.imgur.com/sQ5WbCZl.png" alt="AOL wiki - libextract" title=""></img> 
 	<figcaption markdown="1"> 
 		No style is the new style. Here we've extract the references.
 	</figcaption>
@@ -456,7 +476,7 @@ Best result:
 Second best result:
 
 <figure markdown="1"> 
-	![AOL wiki - libextract](http://i.imgur.com/PTHYH2rl.png) 
+	<img class="pure-img" src="https://i.imgur.com/PTHYH2rl.png" alt="AOL wiki - libextract" title=""></img> 
 	<figcaption markdown="1"> 
 		Here you can see we've extacted the main body of the wiki page. 
 		It's clear how awesome it would be to have post-processing, data-cleaning
@@ -464,14 +484,16 @@ Second best result:
 	</figcaption>
 </figure>
 
-#### Reddit
+---
+
+### Reddit
 
 *target: [r/aww](http://www.reddit.com/r/aww)*
 
 
 #### import.io
 <figure markdown="1"> 
-	![r/aww - import.io](http://i.imgur.com/f6Qzi6Ll.png) 
+	<img class="pure-img" src="https://i.imgur.com/f6Qzi6Ll.png" alt="r/aww - import.io" title=""></img> 
 	<figcaption markdown="1">  
 		[Test it out.](https://magic.import.io/?site=http:%2F%2Fwww.reddit.com%2Fr%2Faww)
 		Import.io clearly has the upper hand. They elegantly clean the data into a tabular format.
@@ -481,7 +503,7 @@ Second best result:
 #### Diffbot
 
 <figure markdown="1"> 
-	![r/aww - diffbot](http://i.imgur.com/4b3FBojl.png) 
+	<img class="pure-img" src="https://i.imgur.com/4b3FBojl.png" alt="r/aww - diffbot" title=""></img> 
 	<figcaption markdown="1"> 
 		Diffbot results are similar to import.io's, minus the fancy styling.
 	</figcaption>
@@ -490,7 +512,7 @@ Second best result:
 #### embed.ly
 
 <figure markdown="1"> 
-	![r/aww - embed.ly](http://i.imgur.com/G3tpLnIl.png) 
+	<img class="pure-img" src="https://i.imgur.com/G3tpLnIl.png" alt="r/aww - embed.ly" title=""></img> 
 	<figcaption markdown="1"> 
 		[Test it out.](http://embed.ly/docs/explore/extract?url=http%3A%2F%2Fwww.reddit.com%2Fr%2Faww)
 		Embed.ly extracts the images fine, but nothing close to tabular data.
@@ -502,7 +524,7 @@ Second best result:
 Second best result: 
 
 <figure markdown="1"> 
-	![r/aww - libextract](http://i.imgur.com/vLxPJiyl.png) 
+	<img class="pure-img" src="https://i.imgur.com/vLxPJiyl.png" alt="r/aww - libextract" title=""></img> 
 	<figcaption markdown="1"> 
 		Like Diffbot and import.io's but absolutely no styling. 
 		I never said it would look pretty.
@@ -511,6 +533,8 @@ Second best result:
 
 The top result is the top bar subreddits. No point in showing that. 
 
+---
+
 ### NYTimes
 
 *target: [NYTimes - Dead birds](http://www.nytimes.com/2015/05/15/business/bird-flu-outbreak-chicken-farmers.html)*
@@ -518,7 +542,7 @@ The top result is the top bar subreddits. No point in showing that.
 #### embed.ly
 
 <figure markdown="1"> 
-	![nytimes - embed.ly](http://i.imgur.com/BV4C6Cyl.png) 
+	<img class="pure-img" src="https://i.imgur.com/BV4C6Cyl.png" alt="nytimes - embed.ly" title=""></img> 
 	<figcaption markdown="1"> 
 		[Test it out.](http://embed.ly/docs/explore/extract?url=http%3A%2F%2Fwww.nytimes.com%2F2015%2F05%2F15%2Fbusiness%2Fbird-flu-outbreak-chicken-farmers.html)
 		Embed.ly wins this one (at least in terms of presentation), as its "cards" are something not seen in other the other extractors.
@@ -528,15 +552,15 @@ The top result is the top bar subreddits. No point in showing that.
 #### Diffbot
 
 <figure markdown="1"> 
-	![nytimes - diffbot](http://i.imgur.com/uPMKocyl.png) 
+	<img class="pure-img" src="https://i.imgur.com/uPMKocyl.png" alt="nytimes - diffbot" title=""></img> 
 	<figcaption markdown="1"> 
-		Diffbot handles this one well. 
+		[Test it out.](http://www.diffbot.com/testdrive/?api=article&url=http%3A%2F%2Fwww.nytimes.com%2F2015%2F05%2F15%2Fbusiness%2Fbird-flu-outbreak-chicken-farmers.html%3Fgwh%3DCEA82EAED8027FA1CE80B287AD63C3D0%26gwt%3Dpay) Diffbot handles this one well. 
 	</figcaption>
 </figure>
 
 #### import.io
 <figure markdown="1"> 
-	![nytimes - import.io](http://i.imgur.com/2hFNLeKl.png) 
+	<img class="pure-img" src="https://i.imgur.com/2hFNLeKl.png" alt="nytimes - import.io" title=""></img> 
 	<figcaption markdown="1"> 
 		[Test it out.](https://magic.import.io/?site=http:%2F%2Fwww.nytimes.com%2F2015%2F05%2F15%2Fbusiness%2Fbird-flu-outbreak-chicken-farmers.html)
 		Import.io is like, *meh, just another website for me*.
@@ -547,17 +571,18 @@ The top result is the top bar subreddits. No point in showing that.
 
 
 <figure markdown="1"> 
-	![nytimes - libextract](http://i.imgur.com/FsWpOJ5l.png) 
+	<img class="pure-img" src="https://i.imgur.com/FsWpOJ5l.png" alt="nytimes - libextract" title=""></img> 
 	<figcaption markdown="1"> 
 		That's it, data cleaning (and styling) is libextract's next feature.
 	</figcaption>
 </figure>
 
+---
 
-### More related work
+## More related work
 
 Most work in tabular data extraction focuses mainly on HTML ``<table>`` 
-extraction and processing. For instance, some tables have column of 
+extraction and processing. For instance, some tables have columns of 
 only numerical values. A proper "processing" step would make note of 
 that column's datatype (and possibly coerce the datatype in code).
 
@@ -589,8 +614,27 @@ Here they describe some examples:
 > ... semi-structured web page domains include books for sale,
 properties for rent, or job offers.
 
-Not to bash on the merits of the above research, none of those 
+Not to bash on the merits of the above research, but none of those 
 solutions are easily available for the rest of us. 
+
+
+
+<script type="text/javascript">
+var addthis_share = addthis_share || {}
+addthis_share = {
+	passthrough : {
+		twitter: {
+			via: "rodricios",
+			text: "Solving #data extraction in #Python"
+		}
+	}
+}
+
+</script>
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55562a0c27b23012" async="async"></script>
+
+
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -605,3 +649,13 @@ solutions are easily available for the rest of us.
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-59748564-2', 'auto');
+  ga('send', 'pageview');
+</script>

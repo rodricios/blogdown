@@ -1,5 +1,5 @@
 {
-	"site_title": "rodrigo palacios",
+	"site_title": "rodri.cios",
 	"title": "rodri.cios",
 	"root": "static", 
 	"index": "index.md", 
@@ -13,13 +13,15 @@
 			"title": "Gross Oversimplifications",
 			"path": "posts/index.md",
 			"index": true, 
-			"section": "posts"
+			"section": "posts",
+			"ad": "<script async src='//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script><!-- data extraction --><ins class='adsbygoogle'     style='display:block'     data-ad-client='ca-pub-3083457535008676'     data-ad-slot='2540039340'     data-ad-format='auto'></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>"
 		}, {
-			"title": "Solving the Data Extraction Problem",
+			"title": "How to Solve Data Extraction",
 			"path": "posts/solving_the_data_extraction_problem.md",
-			"description": "For once, there's too many smart people working on just one problem. It's time to move on.",
+			"description": "For once, there's too many smart people working on just one problem. It's time we all have a good look at this problem...",
 			"image": "http://i.imgur.com/khrCYbT.jpg",
-			"section": "posts"
+			"section": "posts",
+			"ad": "<script async src='//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script><!-- data extraction --><ins class='adsbygoogle'     style='display:block'     data-ad-client='ca-pub-3083457535008676'     data-ad-slot='2540039340'     data-ad-format='auto'></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>"
 		}		
 	], 
 	"footer": {
